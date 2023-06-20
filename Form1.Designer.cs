@@ -31,7 +31,7 @@
             components = new System.ComponentModel.Container();
             txt_IP = new TextBox();
             txt_Port = new TextBox();
-            textBox3 = new TextBox();
+            txt_msg = new TextBox();
             textBox5 = new TextBox();
             contextMenuStrip1 = new ContextMenuStrip(components);
             label1 = new Label();
@@ -49,23 +49,25 @@
             // 
             txt_IP.Location = new Point(727, 51);
             txt_IP.Name = "txt_IP";
-            txt_IP.Size = new Size(200, 38);
+            txt_IP.Size = new Size(200, 23);
             txt_IP.TabIndex = 0;
+            txt_IP.Text = "192.168.128.1";
             // 
             // txt_Port
             // 
             txt_Port.Location = new Point(727, 121);
             txt_Port.Name = "txt_Port";
-            txt_Port.Size = new Size(200, 38);
+            txt_Port.Size = new Size(200, 23);
             txt_Port.TabIndex = 1;
+            txt_Port.Text = "1234";
             // 
-            // textBox3
+            // txt_msg
             // 
-            textBox3.Location = new Point(34, 40);
-            textBox3.Multiline = true;
-            textBox3.Name = "textBox3";
-            textBox3.Size = new Size(521, 261);
-            textBox3.TabIndex = 2;
+            txt_msg.Location = new Point(34, 40);
+            txt_msg.Multiline = true;
+            txt_msg.Name = "txt_msg";
+            txt_msg.Size = new Size(521, 261);
+            txt_msg.TabIndex = 2;
             // 
             // textBox5
             // 
@@ -86,7 +88,7 @@
             label1.AutoSize = true;
             label1.Location = new Point(589, 51);
             label1.Name = "label1";
-            label1.Size = new Size(132, 31);
+            label1.Size = new Size(67, 17);
             label1.TabIndex = 7;
             label1.Text = "本机IP地址";
             // 
@@ -95,7 +97,7 @@
             label2.AutoSize = true;
             label2.Location = new Point(639, 124);
             label2.Name = "label2";
-            label2.Size = new Size(86, 31);
+            label2.Size = new Size(44, 17);
             label2.TabIndex = 8;
             label2.Text = "端口号";
             // 
@@ -104,7 +106,7 @@
             label3.AutoSize = true;
             label3.Location = new Point(635, 188);
             label3.Name = "label3";
-            label3.Size = new Size(134, 31);
+            label3.Size = new Size(68, 17);
             label3.TabIndex = 9;
             label3.Text = "在线列表：";
             // 
@@ -159,15 +161,15 @@
             // lbOnline
             // 
             lbOnline.FormattingEnabled = true;
-            lbOnline.ItemHeight = 31;
+            lbOnline.ItemHeight = 17;
             lbOnline.Location = new Point(639, 222);
             lbOnline.Name = "lbOnline";
-            lbOnline.Size = new Size(288, 159);
+            lbOnline.Size = new Size(288, 157);
             lbOnline.TabIndex = 15;
             // 
             // Form1
             // 
-            AutoScaleDimensions = new SizeF(14F, 31F);
+            AutoScaleDimensions = new SizeF(7F, 17F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(976, 753);
             Controls.Add(lbOnline);
@@ -180,7 +182,7 @@
             Controls.Add(label2);
             Controls.Add(label1);
             Controls.Add(textBox5);
-            Controls.Add(textBox3);
+            Controls.Add(txt_msg);
             Controls.Add(txt_Port);
             Controls.Add(txt_IP);
             Font = new Font("Microsoft YaHei UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
@@ -195,7 +197,7 @@
 
         private TextBox txt_IP;
         private TextBox txt_Port;
-        private TextBox textBox3;
+        private TextBox txt_msg;
         private TextBox textBox5;
         private ContextMenuStrip contextMenuStrip1;
         private Label label1;
