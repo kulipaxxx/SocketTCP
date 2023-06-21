@@ -8,9 +8,9 @@ namespace SocketTCP
     delegate void AddOnlineDelegate(string str, bool flag);
 
     delegate void RecvMsgDelegate(string msg);
-    public partial class Form1 : Form
+    public partial class FormTcpServer : System.Windows.Forms.Form
     {
-        public Form1()
+        public FormTcpServer()
         {
             InitializeComponent();
             myAddOnline += AddOnline;
@@ -23,6 +23,9 @@ namespace SocketTCP
 
         //创建负责监听客户端的线程
         Thread threadListen = null;
+
+        //创建ip与socket的字典
+        Dictionary<string, Socket> DicSocket = new Dictionary<string, Socket>();
 
         private void btn_startServer_Click(object sender, EventArgs e)
         {
@@ -64,9 +67,11 @@ namespace SocketTCP
 
                 string client = socketClient.RemoteEndPoint.ToString();//获取连接地址和端口号
 
+                DicSocket.Add(client, socketClient);
+
                 //invoke 依次进行委托事件执行
                 Invoke(myAddOnline, client, true);
-
+                Invoke(RecvMsg, client + "上线了!");
                 //异步执行
                 //BeginInvoke(myAddOnline, client);
 
@@ -89,14 +94,18 @@ namespace SocketTCP
 
                 int length = socket.Receive(arrMsgResc);
 
-                if (length > 0)
+                if (length == 0)//为0 则断开连接
+                {
+                    DicSocket.Remove(client);
+                    Invoke(recvMsg, client + "下线了!");
+                    Invoke(myAddOnline, client, false);
+                    break;
+                }
+                else
                 {
                     string msg = Encoding.UTF8.GetString(arrMsgResc, 0, length);
-                    Invoke(recvMsg, msg);
-                }
-                else //不为0 则断开连接
-                {
-                    Invoke(myAddOnline, client, false);
+                    string str = "[接收]  " + client + ": " + msg;
+                    Invoke(recvMsg, str);
                 }
             }
         }
@@ -117,6 +126,46 @@ namespace SocketTCP
         private void RecvMsg(string msg)
         {
             this.txt_msg.AppendText(msg + Environment.NewLine);
+        }
+
+        private void btn_sendToSingle_Click(object sender, EventArgs e)
+        {
+            string strMsg = this.txt_send.Text.Trim();
+            byte[] arrMsg = Encoding.UTF8.GetBytes(strMsg);
+
+            if (this.lbOnline.SelectedItems.Count == 0)
+            {
+                MessageBox.Show("请选择要发送的客户端", "发送信息");
+                return;
+            }
+            else
+            {
+                foreach (string client in this.lbOnline.SelectedItems)
+                {
+                    DicSocket[client].Send(arrMsg);
+
+                    string str = "[发送到]  " + client + ": " + strMsg;
+
+                    Invoke(recvMsg, str);
+                }
+            }
+
+        }
+
+        private void btn_sendToAll_Click(object sender, EventArgs e)
+        {
+            string strMsg = this.txt_send.Text.Trim();
+            byte[] arrMsg = Encoding.UTF8.GetBytes(strMsg);
+
+            foreach (string client in this.lbOnline.Items)
+            {
+                DicSocket[client].Send(arrMsg);
+
+                string str = "[发送]  " + client + ": " + strMsg;
+
+                Invoke(recvMsg, str);
+            }
+            Invoke(recvMsg, "[群发] 群发完毕");
         }
     }
 }
