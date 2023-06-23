@@ -75,7 +75,7 @@ namespace SocketTCP
                 }
                 catch (Exception ex)
                 {
-                    Invoke(()=> this.txt_msg.AppendText("断开连接:" + ex.Message + Environment.NewLine));
+                    Invoke(() => this.txt_msg.AppendText("断开连接:" + ex.Message + Environment.NewLine));
                     break;
                 }
 
@@ -88,24 +88,24 @@ namespace SocketTCP
                     Invoke(() => this.txt_msg.AppendText(Msg));
 
                 }
-    
-       
+
+
             }
         }
 
         private void btn_send_Click(object sender, EventArgs e)
         {
-            if(this.btn_Connect.Enabled == true)
+            if (this.btn_Connect.Enabled == true)
             {
                 MessageBox.Show("请先建立连接", "建立连接");
                 return;
             }
             string txt = this.txt_name.Text.Trim();
-            if (string.IsNullOrEmpty(txt))
-            {
-                MessageBox.Show("请输入内容", "发送信息");
-                return;
-            }
+            //if (string.IsNullOrEmpty(txt))
+            //{
+            //    MessageBox.Show("请输入内容", "发送信息");
+            //    return;
+            //}
 
             string msg = "来自" + this.txt_name.Text.Trim() + ": " + this.txt_send.Text.Trim();
 
@@ -121,6 +121,16 @@ namespace SocketTCP
             isRunning = false;
             //关闭socket,不为null处理，为null不处理
             socketClient?.Close();
+        }
+
+        private void btn_selectFile_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog ofd = new OpenFileDialog();
+            ofd.InitialDirectory = "D:\\";
+            if (ofd.ShowDialog() == DialogResult.OK)
+            {
+                this.txt_selectFile.Text = ofd.FileName;
+            }
         }
     }
 }

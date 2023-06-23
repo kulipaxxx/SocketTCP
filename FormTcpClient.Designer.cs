@@ -28,8 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
-            button2 = new Button();
-            textBox6 = new TextBox();
+            btn_selectFile = new Button();
+            txt_selectFile = new TextBox();
             txt_send = new TextBox();
             txt_msg = new TextBox();
             label2 = new Label();
@@ -43,22 +43,23 @@
             txt_name = new TextBox();
             SuspendLayout();
             // 
-            // button2
+            // btn_selectFile
             // 
-            button2.Location = new Point(415, 615);
-            button2.Name = "button2";
-            button2.Size = new Size(150, 46);
-            button2.TabIndex = 16;
-            button2.Text = "选择文件";
-            button2.UseVisualStyleBackColor = true;
+            btn_selectFile.Location = new Point(415, 615);
+            btn_selectFile.Name = "btn_selectFile";
+            btn_selectFile.Size = new Size(150, 46);
+            btn_selectFile.TabIndex = 16;
+            btn_selectFile.Text = "选择文件";
+            btn_selectFile.UseVisualStyleBackColor = true;
+            btn_selectFile.Click += btn_selectFile_Click;
             // 
-            // textBox6
+            // txt_selectFile
             // 
-            textBox6.Location = new Point(29, 613);
-            textBox6.Multiline = true;
-            textBox6.Name = "textBox6";
-            textBox6.Size = new Size(380, 48);
-            textBox6.TabIndex = 15;
+            txt_selectFile.Location = new Point(29, 613);
+            txt_selectFile.Multiline = true;
+            txt_selectFile.Name = "txt_selectFile";
+            txt_selectFile.Size = new Size(380, 48);
+            txt_selectFile.TabIndex = 15;
             // 
             // txt_send
             // 
@@ -172,8 +173,8 @@
             Controls.Add(label1);
             Controls.Add(txt_Port);
             Controls.Add(txt_IP);
-            Controls.Add(button2);
-            Controls.Add(textBox6);
+            Controls.Add(btn_selectFile);
+            Controls.Add(txt_selectFile);
             Controls.Add(txt_send);
             Controls.Add(txt_msg);
             FormBorderStyle = FormBorderStyle.FixedToolWindow;
@@ -188,8 +189,8 @@
 
         #endregion
 
-        private Button button2;
-        private TextBox textBox6;
+        private Button btn_selectFile;
+        private TextBox txt_selectFile;
         private TextBox txt_send;
         private TextBox txt_msg;
         private Label label2;

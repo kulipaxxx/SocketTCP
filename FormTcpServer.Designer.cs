@@ -38,8 +38,8 @@
             label2 = new Label();
             label3 = new Label();
             btn_startServer = new Button();
-            textBox6 = new TextBox();
-            button2 = new Button();
+            txt_selectFile = new TextBox();
+            btn_selectFile = new Button();
             btn_sendToSingle = new Button();
             btn_sendToAll = new Button();
             lbOnline = new ListBox();
@@ -125,22 +125,23 @@
             btn_startServer.UseVisualStyleBackColor = true;
             btn_startServer.Click += btn_startServer_Click;
             // 
-            // textBox6
+            // txt_selectFile
             // 
-            textBox6.Location = new Point(34, 634);
-            textBox6.Multiline = true;
-            textBox6.Name = "textBox6";
-            textBox6.Size = new Size(380, 48);
-            textBox6.TabIndex = 11;
+            txt_selectFile.Location = new Point(34, 634);
+            txt_selectFile.Multiline = true;
+            txt_selectFile.Name = "txt_selectFile";
+            txt_selectFile.Size = new Size(380, 48);
+            txt_selectFile.TabIndex = 11;
             // 
-            // button2
+            // btn_selectFile
             // 
-            button2.Location = new Point(420, 636);
-            button2.Name = "button2";
-            button2.Size = new Size(150, 46);
-            button2.TabIndex = 12;
-            button2.Text = "选择文件";
-            button2.UseVisualStyleBackColor = true;
+            btn_selectFile.Location = new Point(420, 636);
+            btn_selectFile.Name = "btn_selectFile";
+            btn_selectFile.Size = new Size(150, 46);
+            btn_selectFile.TabIndex = 12;
+            btn_selectFile.Text = "选择文件";
+            btn_selectFile.UseVisualStyleBackColor = true;
+            btn_selectFile.Click += btn_selectFile_Click;
             // 
             // btn_sendToSingle
             // 
@@ -183,6 +184,7 @@
             btn_sendFile.TabIndex = 16;
             btn_sendFile.Text = "发送文件";
             btn_sendFile.UseVisualStyleBackColor = true;
+            btn_sendFile.Click += btn_sendFile_Click;
             // 
             // btn_openClient
             // 
@@ -205,8 +207,8 @@
             Controls.Add(lbOnline);
             Controls.Add(btn_sendToAll);
             Controls.Add(btn_sendToSingle);
-            Controls.Add(button2);
-            Controls.Add(textBox6);
+            Controls.Add(btn_selectFile);
+            Controls.Add(txt_selectFile);
             Controls.Add(btn_startServer);
             Controls.Add(label3);
             Controls.Add(label2);
@@ -234,8 +236,8 @@
         private Label label2;
         private Label label3;
         private Button btn_startServer;
-        private TextBox textBox6;
-        private Button button2;
+        private TextBox txt_selectFile;
+        private Button btn_selectFile;
         private Button btn_sendToSingle;
         private Button btn_sendToAll;
         private ListBox lbOnline;

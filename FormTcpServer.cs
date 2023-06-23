@@ -114,8 +114,8 @@ namespace SocketTCP
                     string str = "[接收]  " + client + ": " + msg;
                     Invoke(recvMsg, str);
                 }
-  
-              
+
+
             }
         }
 
@@ -181,6 +181,51 @@ namespace SocketTCP
         {
             FormTcpClient tcpClient = new FormTcpClient();
             tcpClient.Show();
+        }
+
+        private void btn_selectFile_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog ofd = new OpenFileDialog();
+            ofd.InitialDirectory = "D:\\";
+            if (ofd.ShowDialog() == DialogResult.OK)
+            {
+                this.txt_selectFile.Text = ofd.FileName;
+            }
+
+        }
+
+        private void btn_sendFile_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(this.txt_selectFile.Text))
+            {
+                MessageBox.Show("请选择你要发送的文件！", "发送文件");
+                return;
+            }
+            var items = this.lbOnline.SelectedItems;
+            if (items == null || items.Count == 0)
+            {
+                MessageBox.Show("请选择你要发送到的客户端！", "发送文件");
+                return;
+            }
+            using (FileStream fs = new FileStream(this.txt_selectFile.Text, FileMode.Open))
+            {
+                //定义2M空间
+                const long fileSize = 1024 * 1024 * 2;
+                if (fs.Length > fileSize)
+                {
+                    MessageBox.Show("发送文件大小超过2M，不能发送", "发送文件");
+                }
+
+                byte[] buffer = new byte[fileSize];
+
+                int length = fs.Read(buffer, 0, buffer.Length);
+
+                foreach (string item in this.lbOnline.SelectedItems)
+                {
+                    DicSocket[item].Send(buffer);
+                }
+
+            }
         }
     }
 }
