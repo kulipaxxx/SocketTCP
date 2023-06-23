@@ -141,7 +141,10 @@ namespace SocketTCP
         {
             string strMsg = this.txt_send.Text.Trim();
             byte[] arrMsg = Encoding.UTF8.GetBytes(strMsg);
+            byte[] sendMsg = new byte[arrMsg.Length + 1];
+            sendMsg[0] = 0; //0标志位代表消息
 
+            Buffer.BlockCopy(arrMsg, 0, sendMsg, 1, arrMsg.Length);
             if (this.lbOnline.SelectedItems.Count == 0)
             {
                 MessageBox.Show("请选择要发送的客户端", "发送信息");
@@ -151,7 +154,7 @@ namespace SocketTCP
             {
                 foreach (string client in this.lbOnline.SelectedItems)
                 {
-                    DicSocket[client].Send(arrMsg);
+                    DicSocket[client].Send(sendMsg);
 
                     string str = "[发送到]  " + client + ": " + strMsg;
 
@@ -165,10 +168,13 @@ namespace SocketTCP
         {
             string strMsg = this.txt_send.Text.Trim();
             byte[] arrMsg = Encoding.UTF8.GetBytes(strMsg);
+            byte[] sendMsg = new byte[arrMsg.Length + 1];
+            sendMsg[0] = 0; //0标志位代表消息
 
+            Buffer.BlockCopy(arrMsg, 0, sendMsg, 1, arrMsg.Length);
             foreach (string client in this.lbOnline.Items)
             {
-                DicSocket[client].Send(arrMsg);
+                DicSocket[client].Send(sendMsg);
 
                 string str = "[发送]  " + client + ": " + strMsg;
 
@@ -219,10 +225,15 @@ namespace SocketTCP
                 byte[] buffer = new byte[fileSize];
 
                 int length = fs.Read(buffer, 0, buffer.Length);
+                byte[] sendMsg = new byte[length + 1];
+
+                sendMsg[0] = 1;//标志位为1，代表是文件
+
+                Buffer.BlockCopy(buffer, 0, sendMsg, 1, length);
 
                 foreach (string item in this.lbOnline.SelectedItems)
                 {
-                    DicSocket[item].Send(buffer);
+                    DicSocket[item].Send(sendMsg);
                 }
 
             }

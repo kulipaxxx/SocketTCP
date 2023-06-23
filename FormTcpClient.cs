@@ -12,11 +12,13 @@ using System.Windows.Forms;
 
 namespace SocketTCP
 {
+    delegate void FileSaveDelegate(byte[] bt);
     public partial class FormTcpClient : Form
     {
         public FormTcpClient()
         {
             InitializeComponent();
+            MyFileSave += FileSave;
         }
 
         //创建Socket对象
@@ -24,8 +26,11 @@ namespace SocketTCP
 
         Thread thrClient = null;
 
-        //标志位，标准是否还在连接
+        //标志位，标志是否还在连接
         private bool isRunning = true;
+
+        FileSaveDelegate MyFileSave;
+
         private void btn_Connect_Click(object sender, EventArgs e)
         {
             //解析Ip地址
@@ -83,9 +88,17 @@ namespace SocketTCP
                 //说明未连接 了
                 if (length > 0)
                 {
-                    string strMsg = Encoding.UTF8.GetString(arrMsg, 0, length);
-                    string Msg = "[接收] " + strMsg + Environment.NewLine;
-                    Invoke(() => this.txt_msg.AppendText(Msg));
+                    if (arrMsg[0] == 0) //代表接收到的是消息类型
+                    {
+                        string strMsg = Encoding.UTF8.GetString(arrMsg, 0, length);
+                        string Msg = "[接收] " + strMsg + Environment.NewLine;
+                        Invoke(() => this.txt_msg.AppendText(Msg));
+                    }
+                    else //代表接收到的是文件类型
+                    {
+                        Invoke(MyFileSave, arrMsg);
+                    }
+
 
                 }
 
@@ -110,8 +123,11 @@ namespace SocketTCP
             string msg = "来自" + this.txt_name.Text.Trim() + ": " + this.txt_send.Text.Trim();
 
             byte[] arrMsg = Encoding.UTF8.GetBytes(msg);
+            byte[] sendMsg = new byte[arrMsg.Length + 1];
+            sendMsg[0] = 0; //0标志位代表消息
 
-            socketClient.Send(arrMsg);
+            Buffer.BlockCopy(arrMsg, 0, sendMsg, 1, arrMsg.Length);
+            socketClient.Send(sendMsg);
 
             Invoke(() => this.txt_msg.AppendText("[发送] " + this.txt_send.Text.Trim() + Environment.NewLine));
         }
@@ -130,6 +146,21 @@ namespace SocketTCP
             if (ofd.ShowDialog() == DialogResult.OK)
             {
                 this.txt_selectFile.Text = ofd.FileName;
+            }
+        }  
+        
+        private void FileSave(byte[] bt)
+        {
+            SaveFileDialog sfd = new SaveFileDialog();
+            if(sfd.ShowDialog() == DialogResult.OK)
+            {
+                string FileSavePath = sfd.FileName;
+                
+                using(FileStream fs = new FileStream(FileSavePath, FileMode.Create))
+                {
+                    fs.Write(bt, 1, bt.Length - 1);
+                    Invoke(() => this.txt_msg.AppendText("保存文件成功" + FileSavePath + Environment.NewLine));
+                }
             }
         }
     }
