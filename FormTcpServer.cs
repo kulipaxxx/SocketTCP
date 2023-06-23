@@ -167,5 +167,11 @@ namespace SocketTCP
             }
             Invoke(recvMsg, "[群发] 群发完毕");
         }
+
+        private void btn_openClient_Click(object sender, EventArgs e)
+        {
+            FormTcpClient tcpClient = new FormTcpClient();
+            tcpClient.Show();
+        }
     }
 }

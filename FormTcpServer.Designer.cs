@@ -43,7 +43,8 @@
             btn_sendToSingle = new Button();
             btn_sendToAll = new Button();
             lbOnline = new ListBox();
-            button1 = new Button();
+            btn_sendFile = new Button();
+            btn_openClient = new Button();
             SuspendLayout();
             // 
             // txt_IP
@@ -116,7 +117,7 @@
             // btn_startServer
             // 
             btn_startServer.AutoEllipsis = true;
-            btn_startServer.Location = new Point(699, 405);
+            btn_startServer.Location = new Point(699, 381);
             btn_startServer.Name = "btn_startServer";
             btn_startServer.Size = new Size(150, 46);
             btn_startServer.TabIndex = 10;
@@ -144,7 +145,7 @@
             // btn_sendToSingle
             // 
             btn_sendToSingle.AutoEllipsis = true;
-            btn_sendToSingle.Location = new Point(699, 491);
+            btn_sendToSingle.Location = new Point(699, 452);
             btn_sendToSingle.Name = "btn_sendToSingle";
             btn_sendToSingle.Size = new Size(150, 46);
             btn_sendToSingle.TabIndex = 13;
@@ -155,7 +156,7 @@
             // btn_sendToAll
             // 
             btn_sendToAll.AutoEllipsis = true;
-            btn_sendToAll.Location = new Point(699, 574);
+            btn_sendToAll.Location = new Point(699, 523);
             btn_sendToAll.Name = "btn_sendToAll";
             btn_sendToAll.Size = new Size(150, 46);
             btn_sendToAll.TabIndex = 14;
@@ -173,22 +174,34 @@
             lbOnline.Size = new Size(288, 128);
             lbOnline.TabIndex = 15;
             // 
-            // button1
+            // btn_sendFile
             // 
-            button1.AutoEllipsis = true;
-            button1.Location = new Point(699, 653);
-            button1.Name = "button1";
-            button1.Size = new Size(150, 46);
-            button1.TabIndex = 16;
-            button1.Text = "启动服务";
-            button1.UseVisualStyleBackColor = true;
+            btn_sendFile.AutoEllipsis = true;
+            btn_sendFile.Location = new Point(699, 665);
+            btn_sendFile.Name = "btn_sendFile";
+            btn_sendFile.Size = new Size(150, 46);
+            btn_sendFile.TabIndex = 16;
+            btn_sendFile.Text = "发送文件";
+            btn_sendFile.UseVisualStyleBackColor = true;
+            // 
+            // btn_openClient
+            // 
+            btn_openClient.AutoEllipsis = true;
+            btn_openClient.Location = new Point(699, 594);
+            btn_openClient.Name = "btn_openClient";
+            btn_openClient.Size = new Size(150, 46);
+            btn_openClient.TabIndex = 17;
+            btn_openClient.Text = "打开客户端";
+            btn_openClient.UseVisualStyleBackColor = true;
+            btn_openClient.Click += btn_openClient_Click;
             // 
             // FormTcpServer
             // 
             AutoScaleDimensions = new SizeF(14F, 31F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(976, 753);
-            Controls.Add(button1);
+            Controls.Add(btn_openClient);
+            Controls.Add(btn_sendFile);
             Controls.Add(lbOnline);
             Controls.Add(btn_sendToAll);
             Controls.Add(btn_sendToSingle);
@@ -226,6 +239,7 @@
         private Button btn_sendToSingle;
         private Button btn_sendToAll;
         private ListBox lbOnline;
-        private Button button1;
+        private Button btn_sendFile;
+        private Button btn_openClient;
     }
 }
