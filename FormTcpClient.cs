@@ -12,7 +12,7 @@ using System.Windows.Forms;
 
 namespace SocketTCP
 {
-    delegate void FileSaveDelegate(byte[] bt);
+    delegate void FileSaveDelegate(byte[] bt,int length);
     public partial class FormTcpClient : Form
     {
         public FormTcpClient()
@@ -90,13 +90,13 @@ namespace SocketTCP
                 {
                     if (arrMsg[0] == 0) //代表接收到的是消息类型
                     {
-                        string strMsg = Encoding.UTF8.GetString(arrMsg, 0, length);
+                        string strMsg = Encoding.UTF8.GetString(arrMsg, 1, length - 1);
                         string Msg = "[接收] " + strMsg + Environment.NewLine;
                         Invoke(() => this.txt_msg.AppendText(Msg));
                     }
                     else //代表接收到的是文件类型
                     {
-                        Invoke(MyFileSave, arrMsg);
+                        Invoke(MyFileSave, arrMsg, length);
                     }
 
 
@@ -106,6 +106,7 @@ namespace SocketTCP
             }
         }
 
+        #region 发送消息
         private void btn_send_Click(object sender, EventArgs e)
         {
             if (this.btn_Connect.Enabled == true)
@@ -131,7 +132,7 @@ namespace SocketTCP
 
             Invoke(() => this.txt_msg.AppendText("[发送] " + this.txt_send.Text.Trim() + Environment.NewLine));
         }
-
+        #endregion
         private void FormTcpClient_FormClosing(object sender, FormClosingEventArgs e)
         {
             isRunning = false;
@@ -147,20 +148,71 @@ namespace SocketTCP
             {
                 this.txt_selectFile.Text = ofd.FileName;
             }
-        }  
-        
-        private void FileSave(byte[] bt)
+        }
+
+        private void FileSave(byte[] bt, int length)
         {
-            SaveFileDialog sfd = new SaveFileDialog();
-            if(sfd.ShowDialog() == DialogResult.OK)
+            try
             {
-                string FileSavePath = sfd.FileName;
-                
-                using(FileStream fs = new FileStream(FileSavePath, FileMode.Create))
+                SaveFileDialog sfd = new SaveFileDialog();
+                sfd.Filter = "word files(*.docx)|*.docx|txt files(*.txt)|*.txt|xls file(*.xls)|*.xls|ALL files(*.*)|*.*";
+                if (sfd.ShowDialog() == DialogResult.OK)
                 {
-                    fs.Write(bt, 1, bt.Length - 1);
-                    Invoke(() => this.txt_msg.AppendText("保存文件成功" + FileSavePath + Environment.NewLine));
+                    string FileSavePath = sfd.FileName;
+
+                    using (FileStream fs = new FileStream(FileSavePath, FileMode.Create))
+                    {
+                        fs.Write(bt, 1, length - 1);
+                        Invoke(() => this.txt_msg.AppendText("[保存] 保存文件成功" + FileSavePath + Environment.NewLine));
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("保存文件失败");
+            }
+
+        }
+
+        private void btn_sendFile_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(this.txt_selectFile.Text))
+            {
+                MessageBox.Show("请选择你要发送的文件！", "发送文件");
+                return;
+            }
+
+            using (FileStream fs = new FileStream(this.txt_selectFile.Text, FileMode.Open))
+            {
+                //定义2M空间
+                const long fileSize = 1024 * 1024 * 2;
+                if (fs.Length > fileSize)
+                {
+                    MessageBox.Show("发送文件大小超过2M，不能发送", "发送文件");
+                }
+
+                string filename = Path.GetFileName(txt_selectFile.Text);
+                string StrMsg = "发送文件为：" + filename;
+                byte[] arrMsg = Encoding.UTF8.GetBytes(StrMsg);
+
+                byte[] arrSend = new byte[arrMsg.Length + 1];
+                arrSend[0] = 0;
+                Buffer.BlockCopy(arrMsg, 0, arrSend, 1, arrMsg.Length);
+
+                socketClient.Send(arrSend);
+
+
+                byte[] buffer = new byte[fileSize];
+
+                int length = fs.Read(buffer, 0, buffer.Length);
+                byte[] sendMsg = new byte[length + 1];
+
+                sendMsg[0] = 1;//标志位为1，代表是文件
+
+                Buffer.BlockCopy(buffer, 0, sendMsg, 1, length);
+
+                socketClient.Send(sendMsg);
+
             }
         }
     }

@@ -1,3 +1,4 @@
+using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -8,6 +9,8 @@ namespace SocketTCP
     delegate void AddOnlineDelegate(string str, bool flag);
 
     delegate void RecvMsgDelegate(string msg);
+
+    delegate void SaveFIleDelegate(byte[] bt, int length);
     public partial class FormTcpServer : System.Windows.Forms.Form
     {
         public FormTcpServer()
@@ -15,12 +18,14 @@ namespace SocketTCP
             InitializeComponent();
             myAddOnline += AddOnline;
             recvMsg += RecvMsg;
+            MySaveFile += FileSave;
         }
 
         AddOnlineDelegate myAddOnline;
         RecvMsgDelegate recvMsg;
         Socket socket = null;
 
+        SaveFIleDelegate MySaveFile;
         //创建负责监听客户端的线程
         Thread threadListen = null;
 
@@ -110,9 +115,17 @@ namespace SocketTCP
 
                 if (length > 0)
                 {
-                    string msg = Encoding.UTF8.GetString(arrMsgResc, 0, length);
-                    string str = "[接收]  " + client + ": " + msg;
-                    Invoke(recvMsg, str);
+                    if (arrMsgResc[0] == 0)
+                    {
+                        string msg = Encoding.UTF8.GetString(arrMsgResc, 1, length - 1);
+                        string str = "[接收]  " + client + ": " + msg;
+                        Invoke(recvMsg, str);
+                    }
+                    else//接收文件类型
+                    {
+                        Invoke(MySaveFile, arrMsgResc, length);
+                    }
+                   
                 }
 
 
@@ -222,6 +235,19 @@ namespace SocketTCP
                     MessageBox.Show("发送文件大小超过2M，不能发送", "发送文件");
                 }
 
+                string filename = Path.GetFileName(txt_selectFile.Text);
+                string StrMsg = "发送文件为：" + filename;
+                byte[] arrMsg = Encoding.UTF8.GetBytes(StrMsg);
+
+                byte[] arrSend = new byte[arrMsg.Length + 1];
+                arrSend[0] = 0;
+                Buffer.BlockCopy(arrMsg, 0, arrSend, 1, arrMsg.Length);
+
+                foreach (string item in this.lbOnline.SelectedItems)
+                {
+                    DicSocket[item].Send(arrSend);
+                }
+
                 byte[] buffer = new byte[fileSize];
 
                 int length = fs.Read(buffer, 0, buffer.Length);
@@ -237,6 +263,30 @@ namespace SocketTCP
                 }
 
             }
+        }
+
+        private void FileSave(byte[] bt, int length)
+        {
+            try
+            {
+                SaveFileDialog sfd = new SaveFileDialog();
+                sfd.Filter = "word files(*.docx)|*.docx|txt files(*.txt)|*.txt|xls file(*.xls)|*.xls|ALL files(*.*)|*.*";
+                if (sfd.ShowDialog() == DialogResult.OK)
+                {
+                    string FileSavePath = sfd.FileName;
+
+                    using (FileStream fs = new FileStream(FileSavePath, FileMode.Create))
+                    {
+                        fs.Write(bt, 1, length - 1);
+                        Invoke(() => this.txt_msg.AppendText("[保存] 保存文件成功" + FileSavePath + Environment.NewLine));
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("保存文件失败");
+            }
+
         }
     }
 }

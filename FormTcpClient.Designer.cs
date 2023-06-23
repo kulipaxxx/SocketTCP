@@ -141,6 +141,7 @@
             btn_sendFile.TabIndex = 23;
             btn_sendFile.Text = "发送文件";
             btn_sendFile.UseVisualStyleBackColor = true;
+            btn_sendFile.Click += btn_sendFile_Click;
             // 
             // label3
             // 
