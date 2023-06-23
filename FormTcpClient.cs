@@ -23,6 +23,9 @@ namespace SocketTCP
         Socket socketClient = null;
 
         Thread thrClient = null;
+
+        //标志位，标准是否还在连接
+        private bool isRunning = true;
         private void btn_Connect_Click(object sender, EventArgs e)
         {
             //解析Ip地址
@@ -46,7 +49,8 @@ namespace SocketTCP
                 return;
             }
             this.txt_msg.AppendText("与服务器连接成功" + Environment.NewLine);
-
+            //关闭建立连接按钮，避免多次连接
+            this.btn_Connect.Enabled = false;
             thrClient = new Thread(ReceiveMsg);
             thrClient.IsBackground = true;
             thrClient.Start();
@@ -54,12 +58,69 @@ namespace SocketTCP
 
         private void ReceiveMsg(object? obj)
         {
-            
+            while (isRunning)
+            {
+                //定义一个2M缓冲区
+                byte[] arrMsg = new byte[1024 * 1024 * 2];
+
+                int length = -1;
+
+                try
+                {
+                    length = socketClient.Receive(arrMsg);
+                }
+                catch (SocketException ex)
+                {
+                    break;
+                }
+                catch (Exception ex)
+                {
+                    Invoke(()=> this.txt_msg.AppendText("断开连接:" + ex.Message + Environment.NewLine));
+                    break;
+                }
+
+
+                //说明未连接 了
+                if (length > 0)
+                {
+                    string strMsg = Encoding.UTF8.GetString(arrMsg, 0, length);
+                    string Msg = "[接收] " + strMsg + Environment.NewLine;
+                    Invoke(() => this.txt_msg.AppendText(Msg));
+
+                }
+    
+       
+            }
         }
 
         private void btn_send_Click(object sender, EventArgs e)
         {
+            if(this.btn_Connect.Enabled == true)
+            {
+                MessageBox.Show("请先建立连接", "建立连接");
+                return;
+            }
+            string txt = this.txt_name.Text.Trim();
+            if (string.IsNullOrEmpty(txt))
+            {
+                MessageBox.Show("请输入内容", "发送信息");
+                return;
+            }
 
+            string msg = "来自" + this.txt_name.Text.Trim() + ": " + this.txt_send.Text.Trim();
+
+            byte[] arrMsg = Encoding.UTF8.GetBytes(msg);
+
+            socketClient.Send(arrMsg);
+
+            Invoke(() => this.txt_msg.AppendText("[发送] " + this.txt_send.Text.Trim() + Environment.NewLine));
+        }
+
+        private void FormTcpClient_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            isRunning = false;
+            //关闭socket,不为null处理，为null不处理
+            socketClient?.Close();
         }
     }
 }

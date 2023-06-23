@@ -191,7 +191,7 @@
             btn_openClient.Name = "btn_openClient";
             btn_openClient.Size = new Size(150, 46);
             btn_openClient.TabIndex = 17;
-            btn_openClient.Text = "打开客户端";
+            btn_openClient.Text = "客户端";
             btn_openClient.UseVisualStyleBackColor = true;
             btn_openClient.Click += btn_openClient_Click;
             // 

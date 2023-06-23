@@ -92,21 +92,30 @@ namespace SocketTCP
 
                 string client = socket.RemoteEndPoint.ToString();
 
-                int length = socket.Receive(arrMsgResc);
-
-                if (length == 0)//为0 则断开连接
+                int length = -1;
+                try
                 {
+                    length = socket.Receive(arrMsgResc);
+                }
+                catch (Exception ex)
+                {
+                    //从字典中移除该Socket
                     DicSocket.Remove(client);
                     Invoke(recvMsg, client + "下线了!");
+
+                    //从列表中移除该Socket
                     Invoke(myAddOnline, client, false);
                     break;
                 }
-                else
+
+                if (length > 0)
                 {
                     string msg = Encoding.UTF8.GetString(arrMsgResc, 0, length);
                     string str = "[接收]  " + client + ": " + msg;
                     Invoke(recvMsg, str);
                 }
+  
+              
             }
         }
 

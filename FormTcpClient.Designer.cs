@@ -40,7 +40,7 @@
             btn_send = new Button();
             btn_sendFile = new Button();
             label3 = new Label();
-            textBox1 = new TextBox();
+            txt_name = new TextBox();
             SuspendLayout();
             // 
             // button2
@@ -150,13 +150,13 @@
             label3.TabIndex = 25;
             label3.Text = "本机名称";
             // 
-            // textBox1
+            // txt_name
             // 
-            textBox1.Location = new Point(731, 212);
-            textBox1.Name = "textBox1";
-            textBox1.Size = new Size(200, 38);
-            textBox1.TabIndex = 24;
-            textBox1.Text = "长江7号";
+            txt_name.Location = new Point(731, 212);
+            txt_name.Name = "txt_name";
+            txt_name.Size = new Size(200, 38);
+            txt_name.TabIndex = 24;
+            txt_name.Text = "长江7号";
             // 
             // FormTcpClient
             // 
@@ -164,7 +164,7 @@
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(976, 753);
             Controls.Add(label3);
-            Controls.Add(textBox1);
+            Controls.Add(txt_name);
             Controls.Add(btn_sendFile);
             Controls.Add(btn_send);
             Controls.Add(btn_Connect);
@@ -177,9 +177,11 @@
             Controls.Add(txt_send);
             Controls.Add(txt_msg);
             FormBorderStyle = FormBorderStyle.FixedToolWindow;
+            ImeMode = ImeMode.Off;
             Name = "FormTcpClient";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "FormTcpClient";
+            FormClosing += FormTcpClient_FormClosing;
             ResumeLayout(false);
             PerformLayout();
         }
@@ -198,6 +200,6 @@
         private Button btn_send;
         private Button btn_sendFile;
         private Label label3;
-        private TextBox textBox1;
+        private TextBox txt_name;
     }
 }
